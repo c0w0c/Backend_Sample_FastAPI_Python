@@ -1,5 +1,17 @@
 {
     "language": "en",
     "ignorePaths": [],
-    "words": []
+    "words": [
+        "pyenv",
+        "venv",
+        "fastapi",
+        "loguru",
+        "pytz",
+        "pylint",
+        "isort",
+        "pyinstaller",
+        "redoc",
+        "levelname",
+        "levelno"
+    ]
 }
