@@ -1,15 +1,21 @@
 """全域相關的設定值"""
 
 import os
+from collections import deque
 from datetime import datetime
+from threading import Lock
 
 import pytz
+
+from source.core.schema.websocket import WebSocketConnection
 
 
 class GlobalConfig:
     """全域設定"""
 
     _timezone: str = "Asia/Taipei"
+    _websocket_lock = Lock()
+    _websocket_connection_list: deque[WebSocketConnection] = deque()
 
     @classmethod
     def project_name(cls) -> str:
@@ -55,3 +61,26 @@ class GlobalConfig:
     def datetime_now(cls) -> datetime:
         """帶有時區的現在時間"""
         return datetime.now(tz=pytz.timezone(cls._timezone))
+
+    @classmethod
+    def websocket_connection_list(cls) -> list[WebSocketConnection]:
+        """WebSocket 連線列表"""
+        with cls._websocket_lock:
+            return list(cls._websocket_connection_list)
+
+    @classmethod
+    def add_websocket_connection(
+        cls, websocket_connection: WebSocketConnection
+    ) -> None:
+        """新增 WebSocket 連線"""
+        with cls._websocket_lock:
+            cls._websocket_connection_list.append(websocket_connection)
+
+    @classmethod
+    def remove_websocket_connection(
+        cls, websocket_connection: WebSocketConnection
+    ) -> None:
+        """移除 WebSocket 連線"""
+        with cls._websocket_lock:
+            if websocket_connection in cls._websocket_connection_list:
+                cls._websocket_connection_list.remove(websocket_connection)

@@ -11,6 +11,7 @@ from loguru import logger as log
 
 from source.config import GlobalConfig
 from source.system.service import change_native_log_settings
+from source.websocket.route import router as websocket_router
 
 
 @asynccontextmanager
@@ -61,6 +62,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(websocket_router)
 
 if __name__ == "__main__":
     uvicorn.run(
